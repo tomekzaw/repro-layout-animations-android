@@ -1,37 +1,34 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import React, { useState } from 'react';
 import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+  LayoutAnimation,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+const TEXT = Array.from({ length: 14 }, (_, i) => `word${i + 1}`).join(' ');
 
-  return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
-  );
-}
+export default function App() {
+  const [wide, setWide] = useState(false);
 
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
+  const toggle = () => {
+    // Slow, linear animation so that every frame is easy to follow.
+    LayoutAnimation.configureNext({
+      duration: 3000,
+      update: { type: LayoutAnimation.Types.linear },
+    });
+    setWide(value => !value);
+  };
 
   return (
     <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
+      <Pressable onPress={toggle} style={styles.button}>
+        <Text style={styles.buttonText}>{wide ? 'Narrow' : 'Widen'}</Text>
+      </Pressable>
+      <Text style={[styles.text, wide ? styles.wide : styles.narrow]}>
+        {TEXT}
+      </Text>
     </View>
   );
 }
@@ -39,7 +36,26 @@ function AppContent() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 100,
+    paddingHorizontal: 20,
+  },
+  button: {
+    padding: 12,
+    marginBottom: 12,
+    alignItems: 'center',
+    backgroundColor: '#ddd',
+  },
+  buttonText: {
+    fontSize: 18,
+  },
+  text: {
+    fontSize: 22,
+    backgroundColor: 'gold',
+  },
+  narrow: {
+    width: '50%',
+  },
+  wide: {
+    width: '100%',
   },
 });
-
-export default App;
